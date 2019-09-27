@@ -1,13 +1,12 @@
 import React from 'react';
 
 const Header = ({ name }) => {
-    return <h1>{name}</h1>
+    return <h3>{name}</h3>
 }
 const Total = ({ parts }) => {
-    let total = 0;
-    parts.forEach(part => {
-        total += part.exercises;
-    });
+    const total = parts.reduce((accumulator, part) => {
+        return accumulator + part.exercises
+    }, 0)
     return <p>total of {total} exercises</p>
 }
 const Content = ({ parts }) => {
@@ -17,8 +16,8 @@ const Content = ({ parts }) => {
 }
 const Course = ({ course }) => {
     return (
-        <div>
-            <Header name={course.name}></Header>
+        <div key ={course.id}> 
+            <Header name={course.name}/>
             <Content parts={course.parts} />
             <Total parts={course.parts} />
         </div>
