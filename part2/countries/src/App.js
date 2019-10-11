@@ -1,68 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Country from './Components/Country';
+import CountryInfo from './Components/CountryInfo';
+import Filter from './Components/Filter'
 import './App.css';
 
 const App = () => {
   const [countries, setCountries] = useState([]);
   const [result, setResult] = useState([]);
+  const [weather, setWeather] = useState({});
 
   const handelSearch = (event) => {
-    console.log(event.target.value);
     let searchKeyWord = event.target.value.toLowerCase();
+    search(searchKeyWord)
+  }
+
+  const search = (searchKeyWord) => {
     if (searchKeyWord.length > 0) {
       let data = countries.filter((country) => country.name.toLowerCase().includes(searchKeyWord));
-      console.log('result', data);
       setResult(data);
     } else {
       setResult([]);
     }
   }
 
+  const showCountry = (name) => {
+    console.log('show', name)
+    search(name.toLowerCase())
+    // setShowInfo(true);
+  }
   const hook = () => {
-    console.log('effect')
     axios
       .get('https://restcountries.eu/rest/v2/all')
       .then(response => {
-        console.log('promise fulfilled', response.data);
         setCountries(response.data)
       })
   }
   useEffect(hook, []);
+
+  useEffect(() => {
+    if (result.length === 1) {
+      const params = {
+        access_key: '95e034781f22483d5326802f83e9a6f6',
+        query: `${result[0].name}`
+      }
+      axios.get('http://api.weatherstack.com/current', { params })
+        .then(response => {
+          const apiResponse = response.data;
+          setWeather(apiResponse);
+        }).catch(error => {
+          console.log(error);
+        });
+    }
+  }, [result]);
+
   return (
     <div>
-      <div>
-        <span>find countries</span>
-        <input type="text" onChange={handelSearch}></input>
-      </div>
+      <Filter onSearch={handelSearch} />
       <div>
         {result.length > 10 ?
           <span>Too many matches, specify anthor fliter</span>
           : result.length === 1 ?
             <div>
-              <h1>{result[0].name}</h1>
-              <table>
-                <tr>
-                  <td>capital {result[0].capital}</td>
-                </tr>
-                <tr>
-                  <td>population {result[0].population}</td>
-                </tr>
-              </table>
-              <h3>Languages</h3>
-              <ul>
-                {result[0].languages.map((lang) => <li key={lang.name}>
-                  {lang.name}
-                </li>)}
-              </ul>
-              <div>
-                <img src={result[0].flag} alt="flag" className='flag' />
-              </div>
+              <CountryInfo info={result[0]} weather={weather} />
             </div>
             : <ul>
-              {result.map((c) =>
-                <li key={c.name}>
-                  {c.name}
-                </li>)}
+              <Country countries={result} onShow={showCountry} />
             </ul>
         }
         <ul>
