@@ -3,14 +3,19 @@ import Filter from './Components/Filter';
 import Persons from './Components/Persons';
 import PersonForm from './Components/PersonForm ';
 import personService from './services/persons';
+import Notification from './Components/Notification';
+import './index.css';
 
 
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [result, setResult] = useState([]);
-  const [newName, setNewName] = useState('');
-  const [newNumber, setNewNumber] = useState('');
+  const [persons, setPersons] = useState([])
+  const [result, setResult] = useState([])
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState('')
+
   const hook = () => {
     personService.getAll()
       .then(initialPersons => {
@@ -19,8 +24,6 @@ const App = () => {
       })
   }
   useEffect(hook, [])
-
-
 
   const handelNewName = (event) => {
     setNewName(event.target.value)
@@ -36,15 +39,24 @@ const App = () => {
       setResult(persons);
     }
   }
+
   const deletePerson = (person) => {
     personService.deletePerson(person)
       .then(response => {
         setPersons(result.filter((item) => item.id !== person.id))
         setResult(result.filter((item) => item.id !== person.id))
       })
+      .catch(error => {
+        setMessage(`Information of ${person.name} has already removed`);
+        setMessageType('error')
+        setTimeout(() => {
+          setMessage('')
+          setMessageType('')
+        }, 5000)
 
-
+      })
   }
+
   const addName = (event) => {
     event.preventDefault();
     if (newName.length === 0 || newNumber.length === 0) {
@@ -61,6 +73,11 @@ const App = () => {
           setResult(result.concat(person));
           setNewName('');
           setNewNumber('');
+          setMessage(`Addes ${person.name}`);
+          setTimeout(() => {
+            setMessage('')
+          }, 5000)
+
         })
     } else {
       window.confirm(`${newName} is already added to the phonebook, replace old number with new? `) &&
@@ -68,6 +85,7 @@ const App = () => {
 
     }
   }
+
   const updateNumber = personObject => {
     const oldObject = result.find((item) => item.name === personObject.name);
     const oldPerson = result.filter((item) => item.name !== personObject.name)
@@ -79,9 +97,11 @@ const App = () => {
         setNewNumber('');
       });
   }
+  
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={messageType} />
       <Filter onSearch={handelSearch} />
       <PersonForm
         newName={newName}
