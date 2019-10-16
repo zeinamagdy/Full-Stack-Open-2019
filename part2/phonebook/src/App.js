@@ -4,7 +4,7 @@ import Persons from './Components/Persons';
 import PersonForm from './Components/PersonForm ';
 import personService from './services/persons';
 import Notification from './Components/Notification';
-import './index.css';
+
 
 
 
@@ -97,7 +97,7 @@ const App = () => {
         setNewNumber('');
       });
   }
-  
+
   return (
     <div>
       <h2>Phonebook</h2>
