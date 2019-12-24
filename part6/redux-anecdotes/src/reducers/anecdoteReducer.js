@@ -36,9 +36,7 @@ export const createNote = (content) => {
   }
 }
 
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+const reducerNotes = (state = initialState, action) => {
   switch (action.type) {
     case 'VOTE_NOTE':
       const id = action.data.id
@@ -55,4 +53,4 @@ const reducer = (state = initialState, action) => {
 
 }
 
-export default reducer
+export default reducerNotes
