@@ -1,25 +1,16 @@
 import React from 'react'
 import { voteNote } from '../reducers/anecdoteReducer'
 import { votedNoteChange } from '../reducers/notificationReducer'
+import { connect } from 'react-redux'
 
-const AnecdoteList = ({ store }) => {
-    const { notes, _notification, filter } = store.getState()
+const AnecdoteList = (props) => {
     const vote = (id) => {
-        store.dispatch(
-            voteNote(id)
-        )
-        store.dispatch(votedNoteChange(notes.find(anecdote => anecdote.id === id))
-        )
-    }
-    const anecdoteToShow = () => {
-        if (filter !== "")
-            return notes.filter(n => n.content.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
-        else
-            return notes
+        props.voteNote(id)
+        props.votedNoteChange(props.anecdotes.find(anecdote => anecdote.id === id))
     }
     return (
         <ul>
-            {anecdoteToShow().map(anecdote =>
+            {props.visibleAnecdotes.map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
                         {anecdote.content}
@@ -35,4 +26,22 @@ const AnecdoteList = ({ store }) => {
     )
 }
 
-export default AnecdoteList
+const anecdoteToShow = ({ notes, notification, filter }) => {
+    if (filter !== "")
+        return notes.filter(n => n.content.toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+    else
+        return notes
+}
+const mapDispatchToState = {
+    votedNoteChange,
+    voteNote
+}
+const mapStateToProps = (state) => {
+    return {
+        visibleAnecdotes: anecdoteToShow(state),
+        anecdotes: state.notes
+
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToState)(AnecdoteList)

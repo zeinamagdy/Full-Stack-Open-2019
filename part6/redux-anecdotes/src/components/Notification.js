@@ -1,7 +1,8 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 const Notification = (props) => {
-  const votedFlag = props.store.getState().notification !== null ? 1 : 0
+  const votedFlag = props.notification !== null ? 1 : 0
   const style = {
     border: 'solid',
     padding: 10,
@@ -10,13 +11,17 @@ const Notification = (props) => {
   if (votedFlag)
     return (
       <div style={style}>
-        {props.store.getState().notification.content
-        }
+        {props.notification.content}
       </div>
 
     )
   else
     return (<div></div>)
 }
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
 
-export default Notification
+export default connect(mapStateToProps, null)(Notification)

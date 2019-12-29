@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { createNote } from '../reducers/anecdoteReducer'
 
 const newAncedote = (props) => {
@@ -6,9 +7,8 @@ const newAncedote = (props) => {
         event.preventDefault()
         const content = event.target.note.value
         event.target.note.value = ''
-        props.store.dispatch(
-            createNote(content)
-        )
+        props.createNote(content)
+
     }
     return (
         <>
@@ -21,4 +21,7 @@ const newAncedote = (props) => {
     )
 }
 
-export default newAncedote
+const mapDispatchToState = {
+    createNote
+}
+export default connect(null, mapDispatchToState)(newAncedote)

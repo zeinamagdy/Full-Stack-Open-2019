@@ -8,7 +8,6 @@ const filterReducer = (state = 'ALL', action) => {
 
 }
 export const filterChange = filter => {
-    console.log('action', filter)
     return {
         type: 'SET_FILTER',
         filter
