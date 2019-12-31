@@ -5,11 +5,9 @@ import AnecdoteList from './components/AnecdoteList'
 import Notification from './components/Notification'
 import Filter from './components/Filter'
 import { initializeNotes } from './reducers/anecdoteReducer'
-import anecdoteService from './services/anecdotesService'
 const App = (props) => {
   useEffect(() => {
-    anecdoteService
-      .getAll().then(notes => props.initializeNotes(notes))
+    props.initializeNotes()
   })
 
   return (

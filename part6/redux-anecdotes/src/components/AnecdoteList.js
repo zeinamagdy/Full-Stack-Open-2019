@@ -1,12 +1,12 @@
 import React from 'react'
 import { voteNote } from '../reducers/anecdoteReducer'
-import { votedNoteChange } from '../reducers/notificationReducer'
+import { setNotification, clearNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
 const AnecdoteList = (props) => {
-    const vote = (id) => {
-        props.voteNote(id)
-        props.votedNoteChange(props.anecdotes.find(anecdote => anecdote.id === id))
+    const vote = (anecdote) => {
+        props.voteNote(anecdote)
+        props.setNotification(`you voted '${anecdote.content}'`, 3000)
     }
     return (
         <ul>
@@ -17,7 +17,7 @@ const AnecdoteList = (props) => {
                     </div>
                     <div>
                         has {anecdote.votes}
-                        <button onClick={() => vote(anecdote.id)}>vote</button>
+                        <button onClick={() => vote(anecdote)}>vote</button>
                     </div>
                 </div>
             )}
@@ -33,8 +33,9 @@ const anecdoteToShow = ({ notes, notification, filter }) => {
         return notes
 }
 const mapDispatchToState = {
-    votedNoteChange,
-    voteNote
+    setNotification,
+    voteNote,
+    clearNotification
 }
 const mapStateToProps = (state) => {
     return {

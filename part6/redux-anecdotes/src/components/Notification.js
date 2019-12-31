@@ -11,7 +11,7 @@ const Notification = (props) => {
   if (votedFlag)
     return (
       <div style={style}>
-        {props.notification.content}
+        {props.notification}
       </div>
 
     )
